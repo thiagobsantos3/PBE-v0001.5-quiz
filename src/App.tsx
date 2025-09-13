@@ -1,12 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { QuestionProvider } from './contexts/QuestionContext';
 import { QuizSessionProvider } from './contexts/QuizSessionContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/layout/Layout';
-import { Landing } from './pages/Landing';
 import { Login } from './pages/Login'; 
 import { Signup } from './pages/Signup';
 import { ForgotPassword } from './pages/ForgotPassword';
@@ -26,8 +25,6 @@ import { Settings } from './pages/Settings';
 import { SettingsSimple } from './pages/SettingsSimple';
 import { Invitations } from './pages/Invitations';
 import { InvitationAccept } from './pages/InvitationAccept';
-import { FeaturesOverview } from './pages/FeaturesOverview';
-import { Documentation } from './pages/Documentation';
 import { BillingSuccess } from './pages/billing/Success';
 import { AdminPanel } from './pages/admin/AdminPanel';
 import { UserManagement } from './pages/admin/UserManagement';
@@ -56,15 +53,13 @@ function App() {
               <Router>
                 <div className="min-h-screen bg-gray-50">
                   <Routes>
-                    {/* Public routes */}
-                    <Route path="/" element={<Landing />} />
+                    {/* Root: redirect to dashboard or login */}
+                    <Route path="/" element={<HomeRedirect />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/invitation/:token" element={<InvitationAccept />} />
-                    <Route path="/features" element={<FeaturesOverview />} />
-                    <Route path="/documentation" element={<Documentation />} />
                     
                     {/* Protected routes with single Layout wrapper */}
                     <Route path="/*" element={
@@ -214,3 +209,15 @@ function App() {
 }
 
 export default App;
+
+function HomeRedirect() {
+  const { user, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+  return user ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />;
+}
