@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { QuestionProvider } from './contexts/QuestionContext';
@@ -53,6 +53,8 @@ function App() {
               <Router>
                 <div className="min-h-screen bg-gray-50">
                   <Routes>
+                    {/* Redirect all quiz routes to external quiz app */}
+                    <Route path="/quiz/*" element={<RedirectToQuizApp />} />
                     {/* Root: redirect to dashboard or login */}
                     <Route path="/" element={<HomeRedirect />} />
                     <Route path="/login" element={<Login />} />
@@ -220,4 +222,18 @@ function HomeRedirect() {
     );
   }
   return user ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />;
+}
+
+const quizBaseUrl = import.meta.env.VITE_QUIZ_BASE_URL || 'https://quiz.biblequiz.com';
+
+function RedirectToQuizApp() {
+  const location = useLocation();
+  useEffect(() => {
+    const remainingPath = location.pathname.replace(/^\/quiz/, '');
+    const search = location.search || '';
+    const hash = location.hash || '';
+    const target = `${quizBaseUrl}${remainingPath || ''}${search}${hash}`;
+    window.location.replace(target);
+  }, [location]);
+  return null;
 }
