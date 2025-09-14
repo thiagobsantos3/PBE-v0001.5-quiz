@@ -12,7 +12,7 @@ import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
 import { QuickStartQuiz } from './pages/QuickStartQuiz';
 import { CreateOwnQuiz } from './pages/CreateOwnQuiz';
-import { StudyScheduleQuiz } from './pages/StudyScheduleQuiz'; // Keep this import
+import { StudyScheduleQuiz } from './pages/StudyScheduleQuiz';
 // Removed non-quiz pages for the quiz-only app
 // import { Dashboard } from './pages/Dashboard';
 // import { Schedule } from './pages/Schedule';
@@ -68,7 +68,6 @@ function App() {
                         <Layout>
                           <Routes>
                             <Route path="/quiz" element={<QuizCenter />} />
-                            
                             {/* Quiz admin only routes */}
                             <Route path="/admin/test-assessments" element={
                               <ProtectedRoute allowedTeamRoles={['owner', 'admin']}>
